@@ -14,16 +14,187 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      claims: {
+        Row: {
+          claimant_id: string
+          created_at: string
+          id: string
+          item_id: string
+          proof_details: string
+          status: Database["public"]["Enums"]["claim_status"]
+        }
+        Insert: {
+          claimant_id: string
+          created_at?: string
+          id?: string
+          item_id: string
+          proof_details: string
+          status?: Database["public"]["Enums"]["claim_status"]
+        }
+        Update: {
+          claimant_id?: string
+          created_at?: string
+          id?: string
+          item_id?: string
+          proof_details?: string
+          status?: Database["public"]["Enums"]["claim_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "claims_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      items: {
+        Row: {
+          category: Database["public"]["Enums"]["item_category"]
+          created_at: string
+          description: string
+          id: string
+          image_urls: string[]
+          item_date: string
+          location: string
+          reporter_id: string
+          status: Database["public"]["Enums"]["item_status"]
+          title: string
+          type: Database["public"]["Enums"]["item_type"]
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["item_category"]
+          created_at?: string
+          description: string
+          id?: string
+          image_urls?: string[]
+          item_date: string
+          location: string
+          reporter_id: string
+          status?: Database["public"]["Enums"]["item_status"]
+          title: string
+          type: Database["public"]["Enums"]["item_type"]
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["item_category"]
+          created_at?: string
+          description?: string
+          id?: string
+          image_urls?: string[]
+          item_date?: string
+          location?: string
+          reporter_id?: string
+          status?: Database["public"]["Enums"]["item_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["item_type"]
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          email: string | null
+          full_name: string
+          id: string
+          matric_no: string | null
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          email?: string | null
+          full_name: string
+          id: string
+          matric_no?: string | null
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          matric_no?: string | null
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      claim_status: "pending" | "approved" | "rejected"
+      item_category:
+        | "Electronics"
+        | "ID Card"
+        | "Wallet"
+        | "Books"
+        | "Keys"
+        | "Clothing"
+        | "Other"
+      item_status: "open" | "claimed" | "returned" | "rejected"
+      item_type: "lost" | "found"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +321,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      claim_status: ["pending", "approved", "rejected"],
+      item_category: [
+        "Electronics",
+        "ID Card",
+        "Wallet",
+        "Books",
+        "Keys",
+        "Clothing",
+        "Other",
+      ],
+      item_status: ["open", "claimed", "returned", "rejected"],
+      item_type: ["lost", "found"],
+    },
   },
 } as const
