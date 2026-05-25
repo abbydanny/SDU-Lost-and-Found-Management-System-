@@ -13,6 +13,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated.search'
 import { Route as AuthenticatedReportRouteImport } from './routes/_authenticated.report'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated.notifications'
 import { Route as AuthenticatedItemsItemIdRouteImport } from './routes/_authenticated.items.$itemId'
 import { Route as AuthenticatedItemsItemIdClaimRouteImport } from './routes/_authenticated.items.$itemId.claim'
 
@@ -35,6 +36,12 @@ const AuthenticatedReportRoute = AuthenticatedReportRouteImport.update({
   path: '/report',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedItemsItemIdRoute =
   AuthenticatedItemsItemIdRouteImport.update({
     id: '/items/$itemId',
@@ -50,12 +57,14 @@ const AuthenticatedItemsItemIdClaimRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/report': typeof AuthenticatedReportRoute
   '/search': typeof AuthenticatedSearchRoute
   '/items/$itemId': typeof AuthenticatedItemsItemIdRouteWithChildren
   '/items/$itemId/claim': typeof AuthenticatedItemsItemIdClaimRoute
 }
 export interface FileRoutesByTo {
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/report': typeof AuthenticatedReportRoute
   '/search': typeof AuthenticatedSearchRoute
   '/': typeof AuthenticatedIndexRoute
@@ -65,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/report': typeof AuthenticatedReportRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -75,15 +85,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/notifications'
     | '/report'
     | '/search'
     | '/items/$itemId'
     | '/items/$itemId/claim'
   fileRoutesByTo: FileRoutesByTo
-  to: '/report' | '/search' | '/' | '/items/$itemId' | '/items/$itemId/claim'
+  to:
+    | '/notifications'
+    | '/report'
+    | '/search'
+    | '/'
+    | '/items/$itemId'
+    | '/items/$itemId/claim'
   id:
     | '__root__'
     | '/_authenticated'
+    | '/_authenticated/notifications'
     | '/_authenticated/report'
     | '/_authenticated/search'
     | '/_authenticated/'
@@ -125,6 +143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/items/$itemId': {
       id: '/_authenticated/items/$itemId'
       path: '/items/$itemId'
@@ -157,6 +182,7 @@ const AuthenticatedItemsItemIdRouteWithChildren =
   )
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedReportRoute: typeof AuthenticatedReportRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -164,6 +190,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedReportRoute: AuthenticatedReportRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
@@ -180,3 +207,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
