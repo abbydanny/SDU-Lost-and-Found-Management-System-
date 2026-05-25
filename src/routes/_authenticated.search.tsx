@@ -23,7 +23,7 @@ function SearchPage() {
     queryFn: async () => {
       let query = supabase.from("items").select("*").order("created_at", { ascending: false }).limit(100);
       if (type !== "All") query = query.eq("type", type);
-      if (cat !== "All") query = query.eq("category", cat as ItemRow["category"]);
+      if (cat !== "All") query = query.eq("category", cat as "Electronics" | "ID Card" | "Wallet" | "Books" | "Keys" | "Clothing" | "Other");
       if (q.trim()) query = query.ilike("title", `%${q.trim()}%`);
       if (loc.trim()) query = query.ilike("location", `%${loc.trim()}%`);
       const { data, error } = await query;
