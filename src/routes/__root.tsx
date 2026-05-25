@@ -78,11 +78,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "SDU Find - Lost & Found, Southern Delta University" },
       { name: "description", content: "Report and recover lost items on the Southern Delta University, Ozoro campus." },
       { name: "author", content: "Southern Delta University" },
-      { property: "og:title", content: "SDU Find" },
-      { property: "og:description", content: "Lost & Found for Southern Delta University, Ozoro." },
+      { property: "og:title", content: "SDU Find - Lost & Found, Southern Delta University" },
+      { property: "og:description", content: "Report and recover lost items on the Southern Delta University, Ozoro campus." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "SDU Find - Lost & Found, Southern Delta University" },
+      { name: "twitter:description", content: "Report and recover lost items on the Southern Delta University, Ozoro campus." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2505c28f-2fc3-4942-b9f0-6414008cc2c9/id-preview-c7b415f3--76b88c79-849e-4d44-86df-0fca408f50ec.lovable.app-1779740626704.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2505c28f-2fc3-4942-b9f0-6414008cc2c9/id-preview-c7b415f3--76b88c79-849e-4d44-86df-0fca408f50ec.lovable.app-1779740626704.png" },
     ],
     links: [
       {
