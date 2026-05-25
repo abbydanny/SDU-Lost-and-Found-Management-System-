@@ -14,6 +14,7 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated.search'
 import { Route as AuthenticatedReportRouteImport } from './routes/_authenticated.report'
 import { Route as AuthenticatedItemsItemIdRouteImport } from './routes/_authenticated.items.$itemId'
+import { Route as AuthenticatedItemsItemIdClaimRouteImport } from './routes/_authenticated.items.$itemId.claim'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -40,18 +41,26 @@ const AuthenticatedItemsItemIdRoute =
     path: '/items/$itemId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedItemsItemIdClaimRoute =
+  AuthenticatedItemsItemIdClaimRouteImport.update({
+    id: '/claim',
+    path: '/claim',
+    getParentRoute: () => AuthenticatedItemsItemIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/report': typeof AuthenticatedReportRoute
   '/search': typeof AuthenticatedSearchRoute
-  '/items/$itemId': typeof AuthenticatedItemsItemIdRoute
+  '/items/$itemId': typeof AuthenticatedItemsItemIdRouteWithChildren
+  '/items/$itemId/claim': typeof AuthenticatedItemsItemIdClaimRoute
 }
 export interface FileRoutesByTo {
   '/report': typeof AuthenticatedReportRoute
   '/search': typeof AuthenticatedSearchRoute
   '/': typeof AuthenticatedIndexRoute
-  '/items/$itemId': typeof AuthenticatedItemsItemIdRoute
+  '/items/$itemId': typeof AuthenticatedItemsItemIdRouteWithChildren
+  '/items/$itemId/claim': typeof AuthenticatedItemsItemIdClaimRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,13 +68,19 @@ export interface FileRoutesById {
   '/_authenticated/report': typeof AuthenticatedReportRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/items/$itemId': typeof AuthenticatedItemsItemIdRoute
+  '/_authenticated/items/$itemId': typeof AuthenticatedItemsItemIdRouteWithChildren
+  '/_authenticated/items/$itemId/claim': typeof AuthenticatedItemsItemIdClaimRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/report' | '/search' | '/items/$itemId'
+  fullPaths:
+    | '/'
+    | '/report'
+    | '/search'
+    | '/items/$itemId'
+    | '/items/$itemId/claim'
   fileRoutesByTo: FileRoutesByTo
-  to: '/report' | '/search' | '/' | '/items/$itemId'
+  to: '/report' | '/search' | '/' | '/items/$itemId' | '/items/$itemId/claim'
   id:
     | '__root__'
     | '/_authenticated'
@@ -73,6 +88,7 @@ export interface FileRouteTypes {
     | '/_authenticated/search'
     | '/_authenticated/'
     | '/_authenticated/items/$itemId'
+    | '/_authenticated/items/$itemId/claim'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,21 +132,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedItemsItemIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/items/$itemId/claim': {
+      id: '/_authenticated/items/$itemId/claim'
+      path: '/claim'
+      fullPath: '/items/$itemId/claim'
+      preLoaderRoute: typeof AuthenticatedItemsItemIdClaimRouteImport
+      parentRoute: typeof AuthenticatedItemsItemIdRoute
+    }
   }
 }
+
+interface AuthenticatedItemsItemIdRouteChildren {
+  AuthenticatedItemsItemIdClaimRoute: typeof AuthenticatedItemsItemIdClaimRoute
+}
+
+const AuthenticatedItemsItemIdRouteChildren: AuthenticatedItemsItemIdRouteChildren =
+  {
+    AuthenticatedItemsItemIdClaimRoute: AuthenticatedItemsItemIdClaimRoute,
+  }
+
+const AuthenticatedItemsItemIdRouteWithChildren =
+  AuthenticatedItemsItemIdRoute._addFileChildren(
+    AuthenticatedItemsItemIdRouteChildren,
+  )
 
 interface AuthenticatedRouteChildren {
   AuthenticatedReportRoute: typeof AuthenticatedReportRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedItemsItemIdRoute: typeof AuthenticatedItemsItemIdRoute
+  AuthenticatedItemsItemIdRoute: typeof AuthenticatedItemsItemIdRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportRoute: AuthenticatedReportRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedItemsItemIdRoute: AuthenticatedItemsItemIdRoute,
+  AuthenticatedItemsItemIdRoute: AuthenticatedItemsItemIdRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
