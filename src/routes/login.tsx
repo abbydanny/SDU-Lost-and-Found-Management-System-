@@ -27,9 +27,8 @@ function LoginPage() {
   return (
     <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-5 py-8">
       <div className="mb-6 text-center">
-        <div className="mx-auto mb-2 grid h-12 w-12 place-items-center rounded-md bg-primary text-primary-foreground font-bold">SDU</div>
-        <h1 className="text-lg font-semibold">SDU Find</h1>
-        <p className="text-xs text-muted-foreground">Lost & Found · Southern Delta University</p>
+        <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-md bg-primary text-primary-foreground font-bold text-2xl">SDU</div>
+        <p className="text-sm text-muted-foreground">Southern Delta University Lost and Found Management System</p>
       </div>
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
