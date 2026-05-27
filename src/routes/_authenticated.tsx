@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/re
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomNav } from "@/components/BottomNav";
-import { BellIcon, ShieldIcon } from "@/components/Icons";
+import { Bell, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -59,12 +59,16 @@ function AuthLayout() {
           </Link>
           <div className="flex items-center gap-3">
             {isAdmin && (
-              <Link to="/admin" className="text-muted-foreground hover:text-primary" aria-label="Admin">
-                <ShieldIcon />
+              <Link
+                to="/admin"
+                className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2 py-1 text-[11px] font-medium text-primary hover:bg-primary/10"
+                aria-label="Admin"
+              >
+                <ShieldCheck size={14} /> Admin
               </Link>
             )}
-            <Link to="/notifications" className="relative text-muted-foreground hover:text-primary" aria-label="Notifications">
-              <BellIcon />
+            <Link to="/notifications" className="relative rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-primary" aria-label="Notifications">
+              <Bell size={20} />
               {unread > 0 && (
                 <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
                   {unread}

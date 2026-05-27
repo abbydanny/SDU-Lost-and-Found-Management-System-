@@ -2,7 +2,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ImageIcon, XIcon } from "@/components/Icons";
+import { ImageIcon, X } from "lucide-react";
 
 const CATEGORIES = ["Electronics", "ID Card", "Wallet", "Books", "Keys", "Clothing", "Other"] as const;
 
@@ -134,13 +134,13 @@ function ReportPage() {
               <img src={URL.createObjectURL(f)} alt="" className="h-full w-full object-cover" />
               <button type="button" onClick={() => setFiles((p) => p.filter((_, i) => i !== idx))}
                 className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-background/90 text-foreground border border-border">
-                <XIcon width={14} height={14} />
+                <X size={14} />
               </button>
             </div>
           ))}
           {files.length < 3 && (
             <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-md border border-dashed border-border text-xs text-muted-foreground">
-              <ImageIcon />
+              <ImageIcon size={22} />
               <span>Add photo</span>
               <input type="file" accept="image/*" className="hidden"
                 onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
