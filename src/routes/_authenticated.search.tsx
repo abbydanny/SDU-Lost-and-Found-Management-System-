@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ItemCard, type ItemRow } from "@/components/ItemCard";
-import { SearchIcon } from "@/components/Icons";
+import { Search as SearchIcon } from "lucide-react";
 
 const CATEGORIES = ["All", "Electronics", "ID Card", "Wallet", "Books", "Keys", "Clothing", "Other"];
 const TYPES = ["All", "found", "lost"] as const;
@@ -35,7 +35,7 @@ function SearchPage() {
   return (
     <div className="space-y-4">
       <div className="relative">
-        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" width={18} height={18} />
+        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}

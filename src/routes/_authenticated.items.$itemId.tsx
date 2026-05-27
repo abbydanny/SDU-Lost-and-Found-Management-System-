@@ -2,7 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeftIcon, MapPinIcon, ClockIcon, ImageIcon } from "@/components/Icons";
+import { ArrowLeft, MapPin, Clock, ImageIcon, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/items/$itemId")({
@@ -41,15 +41,15 @@ function ItemDetail() {
   return (
     <div className="space-y-4">
       <button onClick={() => router.history.back()} className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-        <ArrowLeftIcon width={16} height={16} /> Back
+        <ArrowLeft size={16} /> Back
       </button>
 
-      <div className="overflow-hidden rounded-md border border-border bg-muted">
+      <div className="overflow-hidden rounded-lg border border-border bg-muted shadow-sm">
         {photo ? (
           <img src={photo} alt={data.title} className="aspect-[4/3] w-full object-cover" />
         ) : (
           <div className="flex aspect-[4/3] items-center justify-center text-muted-foreground">
-            <ImageIcon width={48} height={48} />
+            <ImageIcon size={48} />
           </div>
         )}
       </div>
@@ -75,8 +75,8 @@ function ItemDetail() {
       </div>
 
       <div className="space-y-1 text-sm">
-        <p className="flex items-center gap-2 text-muted-foreground"><MapPinIcon width={16} height={16} /> {data.location}</p>
-        <p className="flex items-center gap-2 text-muted-foreground"><ClockIcon width={16} height={16} /> Reported {new Date(data.created_at).toLocaleString()}</p>
+        <p className="flex items-center gap-2 text-muted-foreground"><MapPin size={16} /> {data.location}</p>
+        <p className="flex items-center gap-2 text-muted-foreground"><Clock size={16} /> Reported {new Date(data.created_at).toLocaleString()}</p>
         <p className="text-muted-foreground">Date: {data.item_date}</p>
         <p className="text-muted-foreground">Status: <span className="font-medium text-foreground">{data.status}</span></p>
       </div>
@@ -103,8 +103,8 @@ function ItemDetail() {
 
       {data.status === "open" && (
         <button onClick={markReturned}
-          className="block w-full rounded-md border border-border bg-background px-4 py-3 text-center text-sm font-medium text-foreground">
-          Mark as Returned (reporter only)
+          className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-3 text-sm font-medium text-foreground hover:bg-muted">
+          <CheckCircle2 size={16} /> Mark as Returned
         </button>
       )}
     </div>

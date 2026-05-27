@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { MapPinIcon, ClockIcon, ImageIcon } from "./Icons";
+import { MapPin, Clock, ImageIcon } from "lucide-react";
 
 export type ItemRow = {
   id: string;
@@ -23,17 +23,23 @@ function timeAgo(iso: string) {
 
 export function ItemCard({ item }: { item: ItemRow }) {
   const photo = item.image_urls?.[0];
+  const statusTone =
+    item.status === "returned"
+      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+      : item.status === "claimed"
+      ? "bg-amber-50 text-amber-800 border-amber-200"
+      : "bg-muted text-muted-foreground border-border";
   return (
     <Link
       to="/items/$itemId"
       params={{ itemId: item.id }}
-      className="flex gap-3 rounded-md border border-border bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-muted/40"
+      className="group flex gap-3 rounded-lg border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:scale-[0.99]"
     >
-      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted flex items-center justify-center text-muted-foreground">
+      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted flex items-center justify-center text-muted-foreground ring-1 ring-border/60">
         {photo ? (
-          <img src={photo} alt={item.title} className="h-full w-full object-cover" loading="lazy" />
+          <img src={photo} alt={item.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
         ) : (
-          <ImageIcon />
+          <ImageIcon size={22} />
         )}
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
@@ -49,13 +55,20 @@ export function ItemCard({ item }: { item: ItemRow }) {
             {item.type}
           </span>
         </div>
-        <p className="mt-0.5 text-xs text-muted-foreground">{item.category}</p>
+        <div className="mt-0.5 flex items-center gap-1.5">
+          <p className="text-xs text-muted-foreground">{item.category}</p>
+          {item.status !== "open" && (
+            <span className={`rounded-full border px-1.5 py-px text-[10px] font-medium ${statusTone}`}>
+              {item.status}
+            </span>
+          )}
+        </div>
         <div className="mt-auto flex items-center gap-3 pt-2 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
-            <MapPinIcon width={14} height={14} /> <span className="truncate">{item.location}</span>
+            <MapPin size={13} /> <span className="truncate">{item.location}</span>
           </span>
           <span className="flex items-center gap-1">
-            <ClockIcon width={14} height={14} /> {timeAgo(item.created_at)}
+            <Clock size={13} /> {timeAgo(item.created_at)}
           </span>
         </div>
       </div>
