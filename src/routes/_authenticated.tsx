@@ -55,7 +55,7 @@ function AuthLayout() {
         <div className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
             <div className="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-foreground font-bold text-sm">SDU</div>
-            <span className="text-sm font-semibold text-foreground">SDU Find</span>
+            <span className="text-sm font-normal text-blue-800">Lost and Found Management System</span>
           </Link>
           <div className="flex items-center gap-3">
             {isAdmin && (
