@@ -181,6 +181,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      promote_to_admin: {
+        Args: { _email: string }
+        Returns: {
+          email: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"
