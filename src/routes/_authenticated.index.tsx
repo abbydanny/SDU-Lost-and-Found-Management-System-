@@ -46,7 +46,7 @@ function HomePage() {
     <div className="space-y-7 pb-6">
       {/* Hero */}
       <section className="-mx-4 -mt-4 rounded-b-2xl bg-gradient-to-br from-primary to-primary/80 px-5 pb-6 pt-6 text-primary-foreground shadow-sm">
-        <p className="text-[11px] uppercase tracking-wider text-primary-foreground/70">Lost and Found Management System · Ozoro</p>
+        <p className="text-[11px] uppercase tracking-wider text-primary-foreground/70">Lost and Found Management System </p>
         <h1 className="mt-1 text-2xl font-bold leading-tight">Lost something on campus?</h1>
         <p className="mt-1 text-sm text-primary-foreground/85">
           Report it, search what others found, and get it back.
