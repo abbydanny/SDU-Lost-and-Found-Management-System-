@@ -1,21 +1,37 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Search, PlusCircle, User, Bell } from "lucide-react";
+import { Home, Search, PlusCircle, User, MessageCircle } from "lucide-react";
 
 const items = [
   { to: "/", label: "Home", icon: Home },
   { to: "/search", label: "Search", icon: Search },
-  { to: "/report", label: "Report", icon: PlusCircle },
-  { to: "/notifications", label: "Alerts", icon: Bell },
+  { to: "/report", label: "Report", icon: PlusCircle, primary: true },
+  { to: "/messages", label: "Chat", icon: MessageCircle },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
 export function BottomNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <ul className="mx-auto flex max-w-screen-md items-stretch justify-around">
-        {items.map(({ to, label, icon: Icon }) => {
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+      <ul className="mx-auto flex max-w-screen-md items-stretch justify-around px-1">
+        {items.map((it) => {
+          const { to, label, icon: Icon } = it;
+          const isPrimary = "primary" in it && it.primary;
           const active = pathname === to || (to !== "/" && pathname.startsWith(to));
+          if (isPrimary) {
+            return (
+              <li key={to} className="flex-1">
+                <Link to={to} className="flex flex-col items-center -mt-5 gap-1 py-1.5 text-[11px]">
+                  <span className={`grid h-12 w-12 place-items-center rounded-full border-4 border-background bg-primary text-primary-foreground shadow-md ${
+                    active ? "ring-2 ring-primary/40" : ""
+                  }`}>
+                    <Icon size={22} strokeWidth={2.2} />
+                  </span>
+                  <span className={active ? "text-primary font-semibold" : "text-muted-foreground"}>{label}</span>
+                </Link>
+              </li>
+            );
+          }
           return (
             <li key={to} className="flex-1">
               <Link

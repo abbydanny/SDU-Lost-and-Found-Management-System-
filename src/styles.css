@@ -62,7 +62,7 @@
 }
 
 :root {
-  /* SDU Find: deep blue #003087 + amber #FFB800 + white, simple borders, soft shadow */
+  /* SDU Find brand: deep blue #003087 + white only. No yellow/amber anywhere. */
   --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.22 0.03 260);
@@ -76,8 +76,9 @@
   --secondary-foreground: oklch(0.32 0.16 264);
   --muted: oklch(0.97 0.005 250);
   --muted-foreground: oklch(0.5 0.02 260);
-  --accent: oklch(0.83 0.16 86);
-  --accent-foreground: oklch(0.22 0.03 260);
+  /* Accent is a soft brand-blue surface (NOT yellow) */
+  --accent: oklch(0.95 0.04 255);
+  --accent-foreground: oklch(0.32 0.16 264);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.9 0.01 250);

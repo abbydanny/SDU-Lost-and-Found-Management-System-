@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ShieldCheck, Check, X, PackageCheck, UserPlus, Loader2 } from "lucide-react";
+import { ShieldCheck, Check, X, PackageCheck, UserPlus, Loader2, Eye } from "lucide-react";
+import { ClaimDetailModal, type ClaimDetail } from "@/components/ClaimDetailModal";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
@@ -89,17 +90,19 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
 }
 
 function PendingClaims({ qc }: { qc: ReturnType<typeof useQueryClient> }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "claims"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("claims")
-        .select("*, items(id,title,status,location,category), claimant:profiles!claims_claimant_id_fkey(full_name,matric_no,email)")
+        .select("*, items(id,title,status,location,category,description,item_date,image_urls), claimant:profiles!claims_claimant_id_fkey(full_name,matric_no,email,department)")
         .order("created_at", { ascending: false });
       if (error) {
         // Fallback without nested profile if FK alias unavailable
         const { data: d2, error: e2 } = await supabase
-          .from("claims").select("*, items(id,title,status,location,category)")
+          .from("claims").select("*, items(id,title,status,location,category,description,item_date,image_urls)")
           .order("created_at", { ascending: false });
         if (e2) throw e2;
         return d2;
@@ -126,6 +129,7 @@ function PendingClaims({ qc }: { qc: ReturnType<typeof useQueryClient> }) {
 
   const pending = (data ?? []).filter((c) => c.status === "pending");
   const others = (data ?? []).filter((c) => c.status !== "pending");
+  const openClaim = (data ?? []).find((c) => c.id === openId) as ClaimDetail | undefined;
 
   return (
     <div className="space-y-4">
@@ -138,7 +142,7 @@ function PendingClaims({ qc }: { qc: ReturnType<typeof useQueryClient> }) {
             No pending claims.
           </p>
         ) : pending.map((c) => (
-          <ClaimCard key={c.id} c={c} onDecide={decide} />
+          <ClaimCard key={c.id} c={c} onDecide={decide} onView={() => setOpenId(c.id)} />
         ))}
       </section>
 
@@ -148,9 +152,18 @@ function PendingClaims({ qc }: { qc: ReturnType<typeof useQueryClient> }) {
             History ({others.length})
           </h2>
           {others.slice(0, 20).map((c) => (
-            <ClaimCard key={c.id} c={c} onDecide={decide} />
+            <ClaimCard key={c.id} c={c} onDecide={decide} onView={() => setOpenId(c.id)} />
           ))}
         </section>
+      )}
+
+      {openClaim && (
+        <ClaimDetailModal
+          claim={openClaim}
+          onClose={() => setOpenId(null)}
+          onApprove={async () => { await decide(openClaim.id, "approved", openClaim.item_id); setOpenId(null); }}
+          onReject={async () => { await decide(openClaim.id, "rejected", openClaim.item_id); setOpenId(null); }}
+        />
       )}
     </div>
   );
@@ -166,13 +179,13 @@ type ClaimRow = {
   claimant?: { full_name?: string; matric_no?: string; email?: string } | null;
 };
 
-function ClaimCard({ c, onDecide }: { c: ClaimRow; onDecide: (id: string, s: "approved" | "rejected", itemId: string) => void }) {
+function ClaimCard({ c, onDecide, onView }: { c: ClaimRow; onDecide: (id: string, s: "approved" | "rejected", itemId: string) => void; onView: () => void }) {
   const tone =
-    c.status === "approved" ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-    : c.status === "rejected" ? "bg-rose-50 text-rose-700 border-rose-200"
-    : "bg-amber-50 text-amber-800 border-amber-200";
+    c.status === "approved" ? "bg-primary text-primary-foreground border-primary"
+    : c.status === "rejected" ? "bg-destructive text-destructive-foreground border-destructive"
+    : "bg-primary/10 text-primary border-primary/30";
   return (
-    <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
+    <div className="rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/40">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">{c.items?.title ?? "Item"}</p>
@@ -180,7 +193,7 @@ function ClaimCard({ c, onDecide }: { c: ClaimRow; onDecide: (id: string, s: "ap
             {c.items?.category}{c.items?.location ? ` · ${c.items.location}` : ""}
           </p>
         </div>
-        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase ${tone}`}>
+        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${tone}`}>
           {c.status}
         </span>
       </div>
@@ -190,24 +203,32 @@ function ClaimCard({ c, onDecide }: { c: ClaimRow; onDecide: (id: string, s: "ap
           {c.claimant.matric_no ? ` · ${c.claimant.matric_no}` : ""}
         </p>
       )}
-      <p className="mt-2 whitespace-pre-wrap rounded-md bg-muted/50 p-2 text-xs text-foreground">{c.proof_details}</p>
+      <p className="mt-2 line-clamp-2 whitespace-pre-wrap rounded-md bg-muted/50 p-2 text-xs text-foreground">{c.proof_details}</p>
       <p className="mt-1 text-[11px] text-muted-foreground">{new Date(c.created_at).toLocaleString()}</p>
-      {c.status === "pending" && (
-        <div className="mt-3 flex gap-2">
-          <button
-            onClick={() => onDecide(c.id, "approved", c.item_id)}
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
-          >
-            <Check size={14} /> Approve
-          </button>
-          <button
-            onClick={() => onDecide(c.id, "rejected", c.item_id)}
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted"
-          >
-            <X size={14} /> Reject
-          </button>
-        </div>
-      )}
+      <div className="mt-3 flex gap-2">
+        <button
+          onClick={onView}
+          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10"
+        >
+          <Eye size={14} /> View Details
+        </button>
+        {c.status === "pending" && (
+          <>
+            <button
+              onClick={() => onDecide(c.id, "approved", c.item_id)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              <Check size={14} /> Approve
+            </button>
+            <button
+              onClick={() => onDecide(c.id, "rejected", c.item_id)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted"
+            >
+              <X size={14} /> Reject
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
