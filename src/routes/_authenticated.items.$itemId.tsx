@@ -20,7 +20,7 @@ function ItemDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("items")
-        .select("*, public_profiles:reporter_id(full_name, department)")
+        .select("*, profiles:reporter_id(full_name, department)")
         .eq("id", itemId).single();
       if (error) throw error;
       return data;
@@ -109,13 +109,13 @@ function ItemDetail() {
 
       <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
         <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary font-semibold">
-          {((data as { public_profiles?: { full_name?: string } }).public_profiles?.full_name ?? "S").slice(0,1).toUpperCase()}
+          {((data as { profiles?: { full_name?: string } }).profiles?.full_name ?? "S").slice(0,1).toUpperCase()}
         </div>
         <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Reported by</p>
-          <p className="truncate text-sm font-semibold">{(data as { public_profiles?: { full_name?: string } }).public_profiles?.full_name ?? "Student"}</p>
-          {(data as { public_profiles?: { department?: string } }).public_profiles?.department && (
-            <p className="truncate text-xs text-muted-foreground">{(data as { public_profiles?: { department?: string } }).public_profiles?.department}</p>
+          <p className="truncate text-sm font-semibold">{(data as { profiles?: { full_name?: string } }).profiles?.full_name ?? "Student"}</p>
+          {(data as { profiles?: { department?: string } }).profiles?.department && (
+            <p className="truncate text-xs text-muted-foreground">{(data as { profiles?: { department?: string } }).profiles?.department}</p>
           )}
         </div>
       </div>
