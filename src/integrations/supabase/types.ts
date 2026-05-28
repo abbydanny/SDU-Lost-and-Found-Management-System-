@@ -91,6 +91,39 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          body: string
+          created_at: string
+          from_admin: boolean
+          id: string
+          item_id: string | null
+          read: boolean
+          sender_id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          from_admin?: boolean
+          id?: string
+          item_id?: string | null
+          read?: boolean
+          sender_id: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          from_admin?: boolean
+          id?: string
+          item_id?: string | null
+          read?: boolean
+          sender_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -171,7 +204,24 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          department: string | null
+          full_name: string | null
+          id: string | null
+        }
+        Insert: {
+          department?: string | null
+          full_name?: string | null
+          id?: string | null
+        }
+        Update: {
+          department?: string | null
+          full_name?: string | null
+          id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
