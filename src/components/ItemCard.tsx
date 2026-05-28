@@ -25,17 +25,17 @@ export function ItemCard({ item }: { item: ItemRow }) {
   const photo = item.image_urls?.[0];
   const statusTone =
     item.status === "returned"
-      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+      ? "bg-primary text-primary-foreground border-primary"
       : item.status === "claimed"
-      ? "bg-amber-50 text-amber-800 border-amber-200"
+      ? "bg-primary/10 text-primary border-primary/30"
       : "bg-muted text-muted-foreground border-border";
   return (
     <Link
       to="/items/$itemId"
       params={{ itemId: item.id }}
-      className="group flex gap-3 rounded-lg border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:scale-[0.99]"
+      className="group flex gap-3 rounded-xl border border-border bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:border-primary/40 hover:shadow-md active:scale-[0.99]"
     >
-      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted flex items-center justify-center text-muted-foreground ring-1 ring-border/60">
+      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted flex items-center justify-center text-muted-foreground ring-1 ring-border/60">
         {photo ? (
           <img src={photo} alt={item.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
         ) : (
@@ -46,10 +46,10 @@ export function ItemCard({ item }: { item: ItemRow }) {
         <div className="flex items-start justify-between gap-2">
           <h3 className="truncate text-sm font-semibold text-foreground">{item.title}</h3>
           <span
-            className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
+            className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
               item.type === "found"
-                ? "bg-accent text-accent-foreground"
-                : "bg-primary text-primary-foreground"
+                ? "bg-primary text-primary-foreground"
+                : "border border-primary text-primary bg-white"
             }`}
           >
             {item.type}

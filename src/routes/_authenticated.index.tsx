@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ItemCard, type ItemRow } from "@/components/ItemCard";
-import { Search, PlusCircle, Inbox, PackageSearch } from "lucide-react";
+import { Search, PlusCircle, Inbox, PackageSearch, MessageCircle, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: HomePage,
@@ -45,41 +45,61 @@ function HomePage() {
   return (
     <div className="space-y-7 pb-6">
       {/* Hero */}
-      <section className="-mx-4 -mt-4 rounded-b-2xl bg-gradient-to-br from-primary to-primary/80 px-5 pb-6 pt-6 text-primary-foreground shadow-sm">
-        <p className="text-[11px] uppercase tracking-wider text-primary-foreground/70">Lost and Found Management System </p>
+      <section className="-mx-4 -mt-4 relative overflow-hidden rounded-b-3xl bg-primary px-5 pb-7 pt-7 text-primary-foreground shadow-md">
+        {/* subtle decorative rings */}
+        <span aria-hidden className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-white/10" />
+        <span aria-hidden className="absolute -right-6 -bottom-10 h-32 w-32 rounded-full border border-white/10" />
+        <p className="text-[11px] uppercase tracking-[0.18em] text-primary-foreground/75">SDU Find</p>
         <h1 className="mt-1 text-2xl font-bold leading-tight">Lost something on campus?</h1>
-        <p className="mt-1 text-sm text-primary-foreground/85">
-          Report it, search what others found, and get it back.
+        <p className="mt-1 max-w-[28ch] text-sm text-primary-foreground/85">
+          Report it, search what others found, and get it back fast.
         </p>
-        <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="mt-5 grid grid-cols-2 gap-2.5">
           <Link
             to="/report"
-            className="inline-flex items-center justify-center gap-1.5 rounded-md bg-white/95 px-3 py-2.5 text-sm font-semibold text-primary shadow-sm hover:bg-white"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white px-3 py-2.5 text-sm font-semibold text-primary shadow-sm hover:bg-white/95 active:scale-[0.98] transition"
           >
             <PlusCircle size={16} /> Report Item
           </Link>
           <Link
             to="/search"
-            className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/30 bg-white/10 px-3 py-2.5 text-sm font-semibold text-white hover:bg-white/20"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/30 bg-white/10 px-3 py-2.5 text-sm font-semibold text-white hover:bg-white/20 active:scale-[0.98] transition"
           >
             <Search size={16} /> Browse
           </Link>
         </div>
       </section>
 
+      {/* Message admin CTA */}
+      <Link
+        to="/messages"
+        className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 hover:bg-primary/10 transition"
+      >
+        <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground">
+          <MessageCircle size={18} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-foreground">Message an admin</p>
+          <p className="truncate text-xs text-muted-foreground">Claim disputes or item questions — works even offline.</p>
+        </div>
+        <ArrowRight size={16} className="text-primary" />
+      </Link>
+
       {/* Stats */}
       <section className="grid grid-cols-2 gap-3">
-        <div className="rounded-lg border border-border bg-card p-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <PackageSearch size={14} /> Active reports
+        <div className="relative overflow-hidden rounded-xl border border-border bg-card p-4 shadow-sm">
+          <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <PackageSearch size={14} className="text-primary" /> Active
           </div>
-          <p className="mt-1 text-xl font-semibold text-foreground">{stats?.open ?? "—"}</p>
+          <p className="mt-2 text-2xl font-bold text-foreground tabular-nums">{stats?.open ?? "—"}</p>
+          <p className="text-[11px] text-muted-foreground">reports open</p>
         </div>
-        <div className="rounded-lg border border-border bg-card p-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Inbox size={14} /> Returned
+        <div className="relative overflow-hidden rounded-xl border border-border bg-card p-4 shadow-sm">
+          <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <Inbox size={14} className="text-primary" /> Returned
           </div>
-          <p className="mt-1 text-xl font-semibold text-foreground">{stats?.returned ?? "—"}</p>
+          <p className="mt-2 text-2xl font-bold text-foreground tabular-nums">{stats?.returned ?? "—"}</p>
+          <p className="text-[11px] text-muted-foreground">items recovered</p>
         </div>
       </section>
 
@@ -124,9 +144,9 @@ function Section({ title, linkLabel, linkTo, children }: { title: string; linkLa
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-border bg-muted/30 p-6 text-center">
-      <Inbox size={20} className="mx-auto text-muted-foreground" />
-      <p className="mt-2 text-sm text-foreground">{label}</p>
+    <div className="rounded-xl border border-dashed border-primary/25 bg-primary/5 p-7 text-center">
+      <Inbox size={22} className="mx-auto text-primary/60" />
+      <p className="mt-2 text-sm font-medium text-foreground">{label}</p>
     </div>
   );
 }

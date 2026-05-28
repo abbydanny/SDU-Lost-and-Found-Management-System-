@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/re
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomNav } from "@/components/BottomNav";
+import { ChatWidget } from "@/components/ChatWidget";
 import { Bell, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -13,6 +14,7 @@ function AuthLayout() {
   const [checked, setChecked] = useState(false);
   const [unread, setUnread] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [uid, setUid] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -23,11 +25,12 @@ function AuthLayout() {
         return;
       }
       setChecked(true);
+      setUid(data.session.user.id);
       void refreshBadges(data.session.user.id);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
       if (!s) router.navigate({ to: "/login", search: { redirect: "/" } });
-      else void refreshBadges(s.user.id);
+      else { setUid(s.user.id); void refreshBadges(s.user.id); }
     });
     return () => {
       mounted = false;
@@ -51,11 +54,14 @@ function AuthLayout() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-30 border-b border-border bg-background">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-foreground font-bold text-sm">SDU</div>
-            <span className="text-sm font-normal text-blue-800">Lost and Found Management System</span>
+            <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground font-extrabold text-[13px] tracking-tight shadow-sm">SDU</div>
+            <div className="leading-tight">
+              <p className="text-sm font-bold text-primary">SDU Find</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Lost &amp; Found</p>
+            </div>
           </Link>
           <div className="flex items-center gap-3">
             {isAdmin && (
@@ -82,6 +88,7 @@ function AuthLayout() {
         <Outlet />
       </main>
       <BottomNav />
+      {uid && <ChatWidget userId={uid} isAdmin={isAdmin} />}
     </div>
   );
 }

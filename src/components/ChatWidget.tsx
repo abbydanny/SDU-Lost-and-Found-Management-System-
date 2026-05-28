@@ -32,12 +32,9 @@ export function ChatWidget({ userId, isAdmin }: { userId: string; isAdmin: boole
     };
   }, []);
 
-  // Don't show widget for admins (admins use /messages page)
-  if (isAdmin) return null;
-
   // load history when opened
   useEffect(() => {
-    if (!open) return;
+    if (!open || isAdmin) return;
     void (async () => {
       const { data } = await supabase
         .from("messages")
@@ -51,11 +48,11 @@ export function ChatWidget({ userId, isAdmin }: { userId: string; isAdmin: boole
       setMessages([...(data ?? []), ...queued]);
       setTimeout(() => listRef.current?.scrollTo({ top: 9e6 }), 50);
     })();
-  }, [open, userId]);
+  }, [open, userId, isAdmin]);
 
   // realtime subscription
   useEffect(() => {
-    if (!open) return;
+    if (!open || isAdmin) return;
     const ch = supabase
       .channel(`messages-${userId}`)
       .on(
@@ -69,7 +66,7 @@ export function ChatWidget({ userId, isAdmin }: { userId: string; isAdmin: boole
       )
       .subscribe();
     return () => { void supabase.removeChannel(ch); };
-  }, [open, userId]);
+  }, [open, userId, isAdmin]);
 
   // re-flush queued whenever back online
   useEffect(() => {
@@ -79,6 +76,9 @@ export function ChatWidget({ userId, isAdmin }: { userId: string; isAdmin: boole
       });
     }
   }, [online]);
+
+  // Don't show widget for admins (admins use /messages page)
+  if (isAdmin) return null;
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
