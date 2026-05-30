@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, MapPin, Clock, ImageIcon, CheckCircle2, MessageCircle, Tag, Calendar } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, ImageIcon, CheckCircle2, Tag, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { ClaimTimeline } from "@/components/ClaimTimeline";
+import { ItemChat } from "@/components/ItemChat";
 
 export const Route = createFileRoute("/_authenticated/items/$itemId")({
   component: ItemDetail,
@@ -14,16 +15,39 @@ function ItemDetail() {
   const { itemId } = Route.useParams();
   const router = useRouter();
   const [idx, setIdx] = useState(0);
+  const [me, setMe] = useState<{ id: string; isAdmin: boolean } | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) return;
+      const { data: r } = await supabase
+        .from("user_roles").select("role")
+        .eq("user_id", u.user.id).eq("role", "admin").maybeSingle();
+      setMe({ id: u.user.id, isAdmin: !!r });
+    })();
+  }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ["item", itemId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("items")
-        .select("*, profiles:reporter_id(full_name, department)")
+        .select("*")
         .eq("id", itemId).single();
       if (error) throw error;
       return data;
+    },
+  });
+
+  const { data: reporter } = useQuery({
+    queryKey: ["item-reporter", data?.reporter_id],
+    enabled: !!data?.reporter_id,
+    queryFn: async () => {
+      const { data: p } = await supabase
+        .from("profiles").select("full_name, department")
+        .eq("id", data!.reporter_id).maybeSingle();
+      return p;
     },
   });
 
@@ -40,8 +64,8 @@ function ItemDetail() {
     },
   });
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
-  if (!data) return <p className="text-sm text-muted-foreground">Item not found.</p>;
+  if (isLoading) return <p className="py-10 text-center text-sm text-muted-foreground">Loading item…</p>;
+  if (!data) return <p className="py-10 text-center text-sm text-muted-foreground">Item not found.</p>;
 
   const photos: string[] = data.image_urls ?? [];
   const photo = photos[idx];
@@ -109,13 +133,13 @@ function ItemDetail() {
 
       <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
         <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary font-semibold">
-          {((data as { profiles?: { full_name?: string } }).profiles?.full_name ?? "S").slice(0,1).toUpperCase()}
+          {(reporter?.full_name ?? "S").slice(0,1).toUpperCase()}
         </div>
         <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Reported by</p>
-          <p className="truncate text-sm font-semibold">{(data as { profiles?: { full_name?: string } }).profiles?.full_name ?? "Student"}</p>
-          {(data as { profiles?: { department?: string } }).profiles?.department && (
-            <p className="truncate text-xs text-muted-foreground">{(data as { profiles?: { department?: string } }).profiles?.department}</p>
+          <p className="truncate text-sm font-semibold">{reporter?.full_name ?? "Student"}</p>
+          {reporter?.department && (
+            <p className="truncate text-xs text-muted-foreground">{reporter.department}</p>
           )}
         </div>
       </div>
@@ -138,16 +162,21 @@ function ItemDetail() {
         </Link>
       )}
 
-      <Link to="/messages"
-        className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/10">
-        <MessageCircle size={16} /> Message admin about this item
-      </Link>
-
-      {data.status === "open" && (
+      {data.status === "open" && me && (me.isAdmin || me.id === data.reporter_id) && (
         <button onClick={markReturned}
           className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-medium text-foreground hover:bg-muted">
           <CheckCircle2 size={16} /> Mark as Returned
         </button>
+      )}
+
+      {me && (
+        <ItemChat
+          itemId={itemId}
+          itemTitle={data.title}
+          currentUserId={me.id}
+          isAdmin={me.isAdmin}
+          reporterId={data.reporter_id}
+        />
       )}
     </div>
   );

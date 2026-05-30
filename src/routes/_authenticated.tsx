@@ -2,7 +2,6 @@ import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/re
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomNav } from "@/components/BottomNav";
-import { ChatWidget } from "@/components/ChatWidget";
 import { Bell, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -14,7 +13,7 @@ function AuthLayout() {
   const [checked, setChecked] = useState(false);
   const [unread, setUnread] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [uid, setUid] = useState<string | null>(null);
+  const [, setUid] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -57,10 +56,10 @@ function AuthLayout() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground font-extrabold text-[13px] tracking-tight shadow-sm">SDU</div>
+            <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary text-primary-foreground font-extrabold text-[13px] tracking-tight shadow-sm ring-1 ring-primary/20">SDU</div>
             <div className="leading-tight">
-              <p className="text-sm font-bold text-primary">SDU Find</p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Lost &amp; Found</p>
+              <p className="text-[13px] font-bold text-primary">SDU Lost &amp; Found</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Management System</p>
             </div>
           </Link>
           <div className="flex items-center gap-3">
@@ -88,7 +87,6 @@ function AuthLayout() {
         <Outlet />
       </main>
       <BottomNav />
-      {uid && <ChatWidget userId={uid} isAdmin={isAdmin} />}
     </div>
   );
 }
