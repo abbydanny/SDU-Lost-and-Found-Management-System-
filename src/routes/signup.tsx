@@ -41,10 +41,9 @@ function SignupPage() {
 
   return (
     <div className="mx-auto max-w-sm px-5 py-8">
-      <div className="mb-6 text-center">
-        <div className="mx-auto mb-2 grid h-14 w-14 place-items-center rounded-xl bg-primary text-primary-foreground font-bold shadow-md ring-1 ring-primary/20">SDU</div>
-        <h1 className="text-lg font-bold text-primary">Create Account</h1>
-        <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Lost &amp; Found Management System</p>
+      <div className="mb-8 text-center">
+        <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-xl bg-primary text-primary-foreground font-bold text-xl shadow-md ring-1 ring-primary/20">SDU</div>
+        <p className="text-sm text-foreground">Lost &amp; Found Management System</p>
       </div>
       <form onSubmit={onSubmit} className="space-y-3">
         <Row label="Matric Number"><input required value={matric} onChange={(e) => setMatric(e.target.value)} placeholder="e.g. FOC/22/002026" className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" /></Row>
