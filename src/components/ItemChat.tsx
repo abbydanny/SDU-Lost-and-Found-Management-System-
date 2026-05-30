@@ -3,6 +3,14 @@ import { Send, MessagesSquare, WifiOff, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { enqueue, flushQueue, getQueued, initAutoFlush, type QueuedMessage } from "@/lib/offline-queue";
 
+function formatStamp(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const sameDay = d.toDateString() === now.toDateString();
+  const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return sameDay ? time : `${d.toLocaleDateString([], { month: "short", day: "numeric" })} · ${time}`;
+}
+
 type Msg = {
   id: string;
   body: string;
@@ -157,13 +165,27 @@ export function ItemChat({
 
       <div ref={listRef} className="max-h-80 min-h-[12rem] space-y-2 overflow-y-auto bg-muted/30 px-3 py-3">
         {loading ? (
-          <p className="py-6 text-center text-xs text-muted-foreground">Loading conversation…</p>
+          <div className="space-y-2">
+            {[0,1,2].map((i) => (
+              <div key={i} className={`flex ${i % 2 ? "justify-end" : "justify-start"}`}>
+                <div className={`h-9 w-2/3 animate-pulse rounded-2xl ${i % 2 ? "rounded-br-sm bg-primary/20" : "rounded-bl-sm bg-white/80 border border-border"}`} />
+              </div>
+            ))}
+          </div>
         ) : msgs.length === 0 ? (
-          <p className="mx-auto mt-6 max-w-[260px] text-center text-xs text-muted-foreground">
-            {isAdmin
-              ? "No messages yet from the reporter about this item."
-              : "Have a question about this item? Send an admin a message — they'll see it's about this exact item."}
-          </p>
+          <div className="mx-auto mt-4 max-w-[280px] rounded-xl border border-dashed border-border bg-white/70 p-4 text-center">
+            <div className="mx-auto mb-2 grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
+              <MessagesSquare size={16} />
+            </div>
+            <p className="text-xs font-semibold text-foreground">
+              {isAdmin ? "No messages yet" : "Start the conversation"}
+            </p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              {isAdmin
+                ? "The reporter hasn't sent a message about this item."
+                : "Ask an admin anything about this item — they'll see exactly which item you mean."}
+            </p>
+          </div>
         ) : msgs.map((m) => {
           const mine = m.from_admin === isAdmin;
           return (
@@ -174,7 +196,7 @@ export function ItemChat({
                 <p className="whitespace-pre-wrap break-words">{m.body}</p>
                 <p className={`mt-0.5 text-[10px] ${mine ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                   {!mine && (m.from_admin ? "Admin · " : "Reporter · ")}
-                  {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  {formatStamp(m.created_at)}
                   {m.pending && " · queued"}
                 </p>
               </div>
