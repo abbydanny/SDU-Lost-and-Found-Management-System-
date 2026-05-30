@@ -28,9 +28,8 @@ function LoginPage() {
     <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-5 py-8">
       <div className="mb-6 text-center">
         <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-xl bg-primary text-primary-foreground font-bold text-2xl shadow-md ring-1 ring-primary/20">SDU</div>
-        <h1 className="text-base font-bold text-primary">SDU Lost &amp; Found</h1>
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">Management System</p>
-        <p className="mt-2 text-xs text-muted-foreground">Southern Delta University, Ozoro</p>
+        <p className="text-sm font-semibold text-foreground">Lost &amp; Found Management System</p>
+        <p className="mt-3 text-xs text-muted-foreground">Southern Delta University, Ozoro</p>
       </div>
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
