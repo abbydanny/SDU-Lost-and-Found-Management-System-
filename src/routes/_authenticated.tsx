@@ -58,7 +58,7 @@ function AuthLayout() {
           <Link to="/" className="flex items-center gap-2">
             <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary text-primary-foreground font-extrabold text-[13px] tracking-tight shadow-sm ring-1 ring-primary/20">SDU</div>
             <div className="leading-tight">
-              <p className="text-[13px] font-bold text-primary">SDU Lost &amp; Found</p>
+              <p className="text-[13px] font-bold text-primary">Lost &amp; Found</p>
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Management System</p>
             </div>
           </Link>
