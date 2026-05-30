@@ -105,7 +105,7 @@ function UserThread({ userId, online }: { userId: string; online: boolean }) {
         <div className="flex items-center gap-2">
           <div className="grid h-9 w-9 place-items-center rounded-full bg-white/15"><ShieldCheck size={18} /></div>
           <div>
-            <p className="text-sm font-semibold">SDU Find Admin</p>
+            <p className="text-sm font-semibold">SDU Lost & Found Admin</p>
             <StatusPill online={online} />
           </div>
         </div>

@@ -134,7 +134,7 @@ export function ChatWidget({ userId, isAdmin }: { userId: string; isAdmin: boole
                 <ShieldCheck size={16} />
               </div>
               <div className="leading-tight">
-                <p className="text-sm font-semibold">SDU Find Admin</p>
+                <p className="text-sm font-semibold">SDU Lost & Found Admin</p>
                 <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1">
                   {online ? <><span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Online</> : <><WifiOff size={10} /> Offline — messages will send later</>}
                 </p>

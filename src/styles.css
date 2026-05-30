@@ -62,7 +62,7 @@
 }
 
 :root {
-  /* SDU Find brand: deep blue #003087 + white only. No yellow/amber anywhere. */
+  /* SDU Lost & Found brand: deep blue #003087 + white only. No yellow/amber anywhere. */
   --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.22 0.03 260);
