@@ -28,7 +28,7 @@ function LoginPage() {
     <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-5 py-8">
       <div className="mb-8 text-center">
         <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-xl bg-primary text-primary-foreground font-bold text-2xl shadow-md ring-1 ring-primary/20">SDU</div>
-        <p className="text-sm font-semibold text-foreground">Lost &amp; Found Management System</p>
+        <p className="text-sm text-foreground">Lost &amp; Found Management System</p>
       </div>
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
