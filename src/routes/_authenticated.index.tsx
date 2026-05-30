@@ -45,27 +45,24 @@ function HomePage() {
   return (
     <div className="space-y-7 pb-6">
       {/* Hero */}
-      <section className="-mx-4 -mt-4 relative overflow-hidden rounded-b-3xl bg-primary px-5 pb-7 pt-7 text-primary-foreground shadow-md">
+      <section className="-mx-4 -mt-4 relative overflow-hidden rounded-b-3xl bg-primary px-5 pb-8 pt-8 text-primary-foreground shadow-md">
         {/* subtle decorative rings */}
         <span aria-hidden className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-white/10" />
         <span aria-hidden className="absolute -right-6 -bottom-10 h-32 w-32 rounded-full border border-white/10" />
-        <p className="text-[11px] uppercase tracking-[0.18em] text-primary-foreground/75">
-          SDU Lost &amp; Found Management System
-        </p>
-        <h1 className="mt-2 text-[22px] font-bold leading-tight">Lost something on campus?</h1>
-        <p className="mt-2 max-w-[28ch] text-sm text-primary-foreground/85">
+        <h1 className="text-[26px] font-bold leading-tight">Lost something on campus?</h1>
+        <p className="mt-3 max-w-[32ch] text-sm text-primary-foreground/90">
           Report it, search what others found, and get it back fast.
         </p>
-        <div className="mt-5 grid grid-cols-2 gap-2.5">
+        <div className="mt-6 grid grid-cols-2 gap-3">
           <Link
             to="/report"
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white px-3 py-2.5 text-sm font-semibold text-primary shadow-sm hover:bg-white/95 active:scale-[0.98] transition-all"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-primary shadow-sm hover:bg-white/95 active:scale-[0.98] transition-all"
           >
             <PlusCircle size={16} /> Report Item
           </Link>
           <Link
             to="/search"
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/30 bg-white/10 px-3 py-2.5 text-sm font-semibold text-white hover:bg-white/20 active:scale-[0.98] transition-all"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/20 active:scale-[0.98] transition-all"
           >
             <Search size={16} /> Browse
           </Link>
